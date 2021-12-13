@@ -1,0 +1,111 @@
+startRoom: room-one # must match one of the keys in rooms:
+description: |
+  Welcome to the tutorial! This is a simple text adventure (also called 'interactive fiction').
+  You can: Explore different locations, pick up items (into your 'inventory') and interact with objects and the environment to solve puzzles.
+  You interact with your environment by entering simple sentences, starting with a verb.
+  For a list of possible verbs, enter 'help verbs'.
+  Often it is useful to examine objects: 'examine table'.
+  Some objects are portable, to pick up a book, enter 'take book'
+  Start with exploring your enviromnent by visiting the other room. To do so, enter 'go east'.
+rooms: # Map<String, Room>
+  room-one: # they key of the room, or the internal name how it is referenced
+    name: Starting room
+    description: | # the pipe indicates a multiline string, see https://yaml-multiline.info/
+      You are in an unadorned, rectangular room without windows and a table next to the wall.
+      A simple light bulb is hanging from the ceiling, the only source of light, casting harsh shadows.
+      There is a passage to the east, apparently to another room much like this.
+    verbs: # for example as: Map<String, Map<String, List<Action>>>
+      go: # "go" is the verb
+        east: # "east" is the object, what follows, is a list (with 1 item) of actions:
+          - room: room-two # "room" indicates we will switch rooms, this must be a key in "rooms"
+      look:
+        table:
+          # "message" will be printed, but has no effect otherwise (but might yield hints)
+          - message: "This is a simple, wooden table. It has a small key lying on top."
+        light:
+          - message: "A simple light bulb. It reads: 60W."
+        key:
+          - message: "A small key."
+      take:
+        table:
+          - message: "Guess what: The table is to heavy to carry around."
+        light:
+          - message: "How many players of interactive fiction does it take to unscrew this light bulb? Apparently, more than one."
+        key:
+          # conditional: only taken if a state "key" is set, otherwise the next action in the list is evaluated
+          - ifState: key
+            message: "You already have the key safely in your pocket."
+          # else:
+          - addState: key # add a new state "key" to the Set of states
+            message: "You pack it into your pocket."
+  room-two:
+    name: Another room
+    description: |
+      You are in another unadorned, rectangular room.
+      There is a passage to the west. In the opposite direction you see a large wardrobe.
+    verbs:
+      go:
+        west:
+          - room: room-one
+        east:
+          - ifState: coat
+            room: secret
+      look:
+        wardrobe:
+          - ifState: wardrobeOpen
+            message: "A large, white wardrobe with an open door. There is a black coat inside."
+          - message: "A large, white wardrobe. It looks like an IKEA model. It is closed."
+        coat:
+          - message: "A large, black coat. It might suit you."
+      open:
+        wardrobe:
+          - ifState: key
+            message: "The wardrobe is now unlocked."
+            addState: wardrobeOpen
+          - message: "You try to pick up the wardrobe... Well... no."
+      take:
+        coat:
+          - ifState: wardrobeOpen
+            message: "It suits you well. But more importantly: you detect a secret passage through the wardrobe towards the east."
+            addState: coat
+  secret:
+    name: A hidden room
+    description: You found the hidden passage to Narnia. The tutorial ends here. Congratulations!
+    verbs:
+      go:
+        west:
+          - room: room-two
+# global verbs: here we define defaults and error-messages
+verbs:
+  default:
+    errors:
+      verb: You cannot do that.
+      object: ""
+  help:
+    errors:
+      verb: |
+        Most of the time, typing something like <verb object> works. Example: <open door>.
+        You can go to a possible direction typing <go (direction)>.
+        You can examine the room or any object typing <examine (object)>. Look around with <look>.
+        Type <help verbs> to get a list of possible verbs.
+      object: "Possible verbs include: go, take, examine, open,..."
+  go:
+    synonyms: [ walk, drive, climb, move ]
+    errors:
+      verb: You can't go there! # if the room does not know the verb 'go' at all
+      object: You can't go {} from here! # if the room does know 'go' but not the object
+  take:
+    synonyms: [ grab, get, pick ]
+    errors:
+      verb: There's nothing to take!
+      object: You can't take {}!
+  look:
+    synonyms: [ examine ]
+    errors:
+      verb: Nothing to look at in here!
+      object: You cannot look at {}!
+  open:
+    synonyms: [ unlock ]
+    errors:
+      verb: Nothing to open here!
+      object: You cannot open {}!
