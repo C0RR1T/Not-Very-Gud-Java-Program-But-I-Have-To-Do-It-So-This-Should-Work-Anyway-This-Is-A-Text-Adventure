@@ -1,18 +1,21 @@
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
-public class Verb {
-    @JsonProperty()
-    private Error errors;
-    @JsonProperty()
-    private ArrayList<String> synonyms;
-    private List<String> nouns;
+public record Verb(
+        @JsonProperty
+        Map<String, ArrayList<Action>> nouns,
+        @JsonProperty
+        ArrayList<String> synonyms,
+        @JsonProperty
+        Errors errors
+) {
+
+}
+
+record Errors(String verb, String object) {
+
 }
 
 
-
-record Error(String verb, String object) {
-
-}

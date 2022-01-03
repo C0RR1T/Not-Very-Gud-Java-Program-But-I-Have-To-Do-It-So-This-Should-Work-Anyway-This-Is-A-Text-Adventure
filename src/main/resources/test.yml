@@ -13,7 +13,7 @@ rooms: # Map<String, Room>
     description: | # the pipe indicates a multiline string, see https://yaml-multiline.info/
       You are in an unadorned, rectangular room without windows and a table next to the wall.
       A simple light bulb is hanging from the ceiling, the only source of light, casting harsh shadows.
-      There is a passage to the east, apparently to another room much like this.
+      There is a passage to the east, apparently to another room much like this. possible actions: cargo
     verbs: # for example as: Map<String, Map<String, List<Action>>>
       go: # "go" is the verb
         east: # "east" is the object, what follows, is a list (with 1 item) of actions:
