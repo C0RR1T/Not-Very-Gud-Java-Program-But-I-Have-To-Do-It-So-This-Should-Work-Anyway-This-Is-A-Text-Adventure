@@ -1,12 +1,13 @@
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public record Room(
         @JsonProperty(required = true)
         String description,
         @JsonProperty(required = true)
-        HashMap<String, Verb> verbs,
+        Map<String, Map<String, List<Action>>> verbs,
         @JsonProperty(required = true)
         String name) {
 }

@@ -5,17 +5,11 @@ import java.util.Map;
 
 public record Verb(
         @JsonProperty
-        Map<String, ArrayList<Action>> nouns,
-        @JsonProperty
-        ArrayList<String> synonyms,
-        @JsonProperty
-        Errors errors
+        Map<String, ArrayList<Action>> nouns
 ) {
 
 }
 
-record Errors(String verb, String object) {
 
-}
 
 

@@ -5,7 +5,6 @@ public class Console {
 
   public Console() {
     this.scanner = new Scanner(System.in);
-
   }
 
   public void say(String msg) {
